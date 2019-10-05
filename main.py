@@ -8,6 +8,7 @@ import imgur_api
 import links
 import commands
 import skypebottoken
+import os
 
 import bleach
 from bs4 import BeautifulSoup
@@ -116,4 +117,5 @@ if __name__ == '__main__':
     links.load_links_file()
     imgur_api.init()
     random.seed()  # init random number generator
-    app.run(host='localhost', port=80, debug=True)  # , ssl_context=context)
+    port = int(os.environ.get('PORT', 8000))
+    app.run(host='0.0.0.0', port=port, debug=True)  # , ssl_context=context)
