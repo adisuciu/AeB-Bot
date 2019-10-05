@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+env/
 build/
 develop-eggs/
 dist/
@@ -24,6 +25,9 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.egg-info/
+.installed.cfg
+*.egg
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -53,6 +57,7 @@ coverage.xml
 
 # Django stuff:
 *.log
+<<<<<<< HEAD
 local_settings.py
 db.sqlite3
 
@@ -102,3 +107,17 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# AeBBot stuff:
+.idea/
+*.txt
+*.ttf
+bottoken
+font
+imgurtoken
+meme_history
+temp*.*
+!bug_mafia.txt
+!ciuraru.txt
+!requirements.txt
+!runtime.txt
