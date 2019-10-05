@@ -129,8 +129,15 @@ def init():
     global client_id, client_secret
     with open("imgurtoken", "r") as f:
         content = f.read().splitlines()
+
+    try:
         client_id = os.environ.get('imgur_id', content[0])
         client_secret = os.environ.get('imgur_secret', content[1])
+    except IndexError:
+        client_id = os.environ.get('imgur_id', "")
+        client_secret = os.environ.get('imgur_secret', "")
+
+
     try:
         read_token_from_file("token")
     except FileNotFoundError:
