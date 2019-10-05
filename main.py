@@ -15,8 +15,8 @@ from bs4 import BeautifulSoup
 from flask import Flask, request
 
 app = Flask(__name__)
-last_sender=""
-nsfw_tag=False
+last_sender = ""
+nsfw_tag = False
 
 bot = skype_chatbot.SkypeBot(skypebottoken.app_id, skypebottoken.app_secret)
 
@@ -38,9 +38,10 @@ switcher = {
     "search_meme": commands.search_memes
 }
 
-def remove_ahref(cmd):
 
+def remove_ahref(cmd):
     return cmd
+
 
 def convert_quot(text):
     soup = BeautifulSoup(text).text
@@ -49,8 +50,8 @@ def convert_quot(text):
 
 
 def convert_skype_format(cmd):
-    cmd=remove_ahref(cmd)
-    cmd=convert_quot(cmd)
+    cmd = remove_ahref(cmd)
+    cmd = convert_quot(cmd)
     return cmd
 
 
@@ -60,7 +61,7 @@ def parse_message(text):
     global nsfw_tag
     if not text.startswith(settings.bot_prefix):
         return
-    text=text[len(settings.bot_prefix):] # remove bot_prefix
+    text = text[len(settings.bot_prefix):]  # remove bot_prefix
     cmd = shlex.split(text)
     log("Request - " + str(cmd))
     response = switcher[cmd[0]](cmd) if cmd[0] in switcher else False
@@ -68,24 +69,11 @@ def parse_message(text):
     return response
 
 
-#
-# @app.route('/imgur_login', methods=['POST', 'GET'])
-# def webhook_imgur():
-#     if request.method == 'POST':
-#         try:
-#             data=json.loads(request.data)
-#             print(data)
-#
-#         except Exception as e:
-#             print(e)
-#     return 'Code: 200'
-
-
 @app.route('/api/messages', methods=['POST', 'GET'])
 def webhook():
     if request.method == 'POST':
         try:
-            global last_sender # hack
+            global last_sender  # hack
             data = json.loads(request.data)
             bot_id = data['recipient']['id']
             bot_name = data['recipient']['name']
@@ -99,9 +87,9 @@ def webhook():
 
             global nsfw_tag
 
-            bot.send_message(bot_id,bot_name,recipient,service,last_sender,response,text_format)
+            bot.send_message(bot_id, bot_name, recipient, service, last_sender, response, text_format)
             if response.endswith(".jpg") and not nsfw_tag:
-                bot.send_media(bot_id,bot_name,recipient,service,last_sender,"image/jpg",response)
+                bot.send_media(bot_id, bot_name, recipient, service, last_sender, "image/jpg", response)
             if response.endswith(".gif") and not nsfw_tag:
                 bot.send_media(bot_id, bot_name, recipient, service, last_sender, "image/gif", response)
 
@@ -113,8 +101,19 @@ def webhook():
     return 'Code: 200'
 
 
+@app.route('/', methods=['POST', 'GET'])
+def webhook_default():
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.data)
+            print(data)
+        except Exception as e:
+            print(e)
+    return 'Welcome to AeBBot - Code: 200'
+
+
 if __name__ == '__main__':
     links.load_links_file()
     imgur_api.init()
     random.seed()  # init random number generator
-    app.run(host='localhost', port=8000, debug=True)  # , ssl_context=context)
+    app.run(host='localhost', port=80, debug=True)  # , ssl_context=context)
