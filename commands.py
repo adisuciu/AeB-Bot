@@ -21,18 +21,18 @@ def dummy(request=0):
 
 
 def help(request=0):
-    return "--help - this help\n" \
-           "--about - about this bot\n" \
-           "--quote <bug/ciuraru> - requests random BUG MAFIA/Ciuraru quote\n" \
-           "--uptime - shows the uptime of the bot\n" \
-           "--remember <name> <phrase> - maps <phrase> to a <name>. if name contains nsfw, no preview will be shown on recall\n" \
-           "--forget <name> - forgets <name> and attached <phrase>\n" \
-           "--recall <name> [hide/nsfw] - recalls the <phrase> with name <name> - [hide][nsfw] - hides preview\n" \
-           "--search [phrase] - search all names that begin with [phrase]. [phrase] can be empty - lists all names \n" \
-           "--getpic [subreddit] - gets a random picture from the subreddit. The picture is taken from today's top 60\n" \
-           "--memegen <meme> '<top>' '<bottom>' - on the fly meme generator\n" \
-           "--search_meme [phrase] - search all the available memes that begin with phrase\n" \
-           "--imgur_status - returns the login status of the imgur account\n"
+    return "help - this help\n" \
+           "about - about this bot\n" \
+           "quote <bug/ciuraru> - requests random BUG MAFIA/Ciuraru quote\n" \
+           "uptime - shows the uptime of the bot\n" \
+           "remember <name> <phrase> - maps <phrase> to a <name>. if name contains nsfw, no preview will be shown on recall\n" \
+           "forget <name> - forgets <name> and attached <phrase>\n" \
+           "recall <name> [hide/nsfw] - recalls the <phrase> with name <name> - [hide][nsfw] - hides preview\n" \
+           "search [phrase] - search all names that begin with [phrase]. [phrase] can be empty - lists all names \n" \
+           "getpic [subreddit] - gets a random picture from the subreddit. The picture is taken from today's top 60\n" \
+           "memegen <meme> '<top>' '<bottom>' - on the fly meme generator\n" \
+           "search_meme [phrase] - search all the available memes that begin with phrase\n" \
+           "imgur_status - returns the login status of the imgur account\n"
 
 
 def quote(request):

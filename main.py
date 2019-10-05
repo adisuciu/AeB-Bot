@@ -18,6 +18,7 @@ from flask import Flask, request
 app = Flask(__name__)
 last_sender = ""
 nsfw_tag = False
+bot_name=""
 
 bot = skype_chatbot.SkypeBot(skypebottoken.app_id, skypebottoken.app_secret)
 
@@ -60,10 +61,13 @@ def parse_message(text):
     text = convert_skype_format(text)
 
     global nsfw_tag
+
     if not text.startswith(settings.bot_prefix):
         return
     text = text[len(settings.bot_prefix):]  # remove bot_prefix
     cmd = shlex.split(text)
+    if cmd[0]=="AeB-Bot":
+        cmd.pop(0)
     log("Request - " + str(cmd))
     response = switcher[cmd[0]](cmd) if cmd[0] in switcher else False
     log("Response - " + str(response))
@@ -75,6 +79,7 @@ def webhook():
     if request.method == 'POST':
         try:
             global last_sender  # hack
+            global bot_name
             data = json.loads(request.data)
             bot_id = data['recipient']['id']
             bot_name = data['recipient']['name']

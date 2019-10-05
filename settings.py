@@ -1,6 +1,6 @@
 import datetime
 
-bot_prefix='--'
+bot_prefix=''
 dt = datetime.datetime.now()
 
 links_file = "links.txt"
