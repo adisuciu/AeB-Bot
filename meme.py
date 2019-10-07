@@ -171,9 +171,9 @@ def build_meme_from_link(request):
     width = img.size[0]
     height = img.size[1]
     textwidth = width - 100
-
+    maxFontSize = 300
     # search appropriate font size
-    for i in range(100):
+    for i in range(maxFontSize):
         font = ImageFont.truetype(settings.font_location, i)
         toptextsize = font.getsize(toptext)[0]
         if textwidth < toptextsize:
@@ -184,7 +184,7 @@ def build_meme_from_link(request):
 
     # search appropriate font size
     bottextsize = 0
-    for i in range(100):
+    for i in range(maxFontSize):
         font = ImageFont.truetype(settings.font_location, i)
         bottextsize = font.getsize(bottomtext)[0]
         # workaround for older PIL version that is used by pythonanywhere
