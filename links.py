@@ -45,12 +45,17 @@ def search_links(request):
 
 def remember_link(request):
     if type(request) == list and len(request) == 3:
+        overwrite=False
         if request[1] in Links:
-            return "This name already exists in the database"
+            overwrite=True
+            prevVal=Links[request[1]]
+
+        request[2] = remove_braces_from_link(request[2])
+        Links[request[1]] = request[2]  # + ("v" if str(request[2].endswith(".gif")) else "") # can be activated
+        save_links_file()
+        if overwrite:
+            return "'%s' overwritten, previous value: '%s'" % (request[1], prevVal)
         else:
-            request[2] = remove_braces_from_link(request[2])
-            Links[request[1]] = request[2]  # + ("v" if str(request[2].endswith(".gif")) else "") # can be activated
-            save_links_file()
             return "'%s' remembered" % request[1]
     else:
         return "Wrong number of parameters. Usage: /remember <name> <link>"
