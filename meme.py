@@ -196,6 +196,7 @@ def build_meme_from_link(request):
     DrawOutlinedText(draw, ((width - bottextsize) / 2, height - bottextheight - 10), bottomtext,
                      font=font, outline=shadowcolor, fill=fillcolor)
 
+    img=img.convert("RGB")
     img.save(settings.image_temp_file, quality=50)
     log("Text added to the image")
     with open(settings.image_temp_file, "rb") as file:
