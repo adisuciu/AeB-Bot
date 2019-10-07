@@ -2,10 +2,11 @@ import os
 import json
 import settings
 from common import log
+import db
 
 Links = {}
 
-def load_links_file():
+def load_links_db():
     if not os.path.isfile(settings.links_file):
         log("%s does not exist. No links loaded" % settings.links_file)
         return  # file does not exist
@@ -14,14 +15,14 @@ def load_links_file():
         file_content = file.read()
 
     global Links
-    Links = json.loads(file_content)
-    log("Links dictionary loaded from %s" % settings.links_file)
+    try:
+        new_links = db.select("*")
+        Links = new_links
+        log("Links dictionary loaded from db")
+    except:
+        log("DB error")
+        pass
 
-
-def save_links_file():
-    output = json.dumps(Links)
-    with open(settings.links_file, mode="w") as file:
-        file.write(output)
 
 
 def find_links_contain(cont=""):
@@ -34,7 +35,7 @@ def find_links_contain(cont=""):
 
 def search_links(request):
     if type(request) == list and len(request) in {1, 2}:
-        load_links_file()
+        load_links_db()
         string = "Currently remembered links %sare:\n" % \
                  (("that start with '%s' " % request[1]) if len(request) == 2 else "")
         string += "'" + "', '".join(find_links_contain(request[1] if len(request) == 2 else '')) + "'"
@@ -52,10 +53,11 @@ def remember_link(request):
 
         request[2] = remove_braces_from_link(request[2])
         Links[request[1]] = request[2]  # + ("v" if str(request[2].endswith(".gif")) else "") # can be activated
-        save_links_file()
         if overwrite:
+            db.update(request[1],request[2])
             return "'%s' overwritten, previous value: '%s'" % (request[1], prevVal)
         else:
+            db.insert(request[1],request[2])
             return "'%s' remembered" % request[1]
     else:
         return "Wrong number of parameters. Usage: /remember <name> <link>"
@@ -64,8 +66,9 @@ def remember_link(request):
 def forget_link(request):
     if type(request) == list and len(request) == 2:
         if request[1] in Links:
+            db.delete(request[1])
             del Links[request[1]]
-            save_links_file()
+
             return "'%s' forgotten" % request[1]
         else:
             return "'%s' cannot be found" % request[1]
@@ -75,7 +78,7 @@ def forget_link(request):
 
 # noinspection PyUnusedLocal
 def recall_link(request):
-    load_links_file()  # reload just in case - it should already be synced
+    load_links_db()  # reload just in case - it should already be synced
     if type(request) == list and len(request) in {2, 3}:
         global nsfw_tag
         if {'nsfw', 'hide', 'NSFW'}.intersection(request):  # nsfw/hide parameter

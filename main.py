@@ -11,6 +11,7 @@ import skypebottoken
 import os
 
 import bleach
+import db
 from bs4 import BeautifulSoup
 
 from flask import Flask, request
@@ -37,7 +38,8 @@ switcher = {
     "logout_imgur": commands.logout_imgur,
     "imgur_status": commands.login_status_imgur,
     "memegen": commands.meme_gen,
-    "search_meme": commands.search_memes
+    "search_meme": commands.search_memes,
+    "nuke": commands.nuke_db,
 }
 
 
@@ -119,7 +121,8 @@ def webhook_default():
 
 
 if __name__ == '__main__':
-    links.load_links_file()
+    db.create_if_doesnt_exist()
+    links.load_links_db()
     imgur_api.init()
     random.seed()  # init random number generator
     port = int(os.environ.get('PORT', 8000))

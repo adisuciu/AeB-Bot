@@ -4,6 +4,7 @@ import random
 import links
 import imgur_api
 import meme
+import db
 
 def about(request=0):
     return settings.about_message
@@ -90,3 +91,9 @@ def meme_gen(request=0):
 
 def search_memes(request=0):
     return meme.search_meme(request)
+
+def nuke_db(request=0):
+    if(request[1] == db.password):
+        db.nuke()
+        links.Links={}
+        return "DATABASE NUKED"
