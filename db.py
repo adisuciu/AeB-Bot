@@ -9,12 +9,14 @@ port = os.environ.get('DATABASE_PASSWORD', "5432")
 db = os.environ.get('DATABASE_DATABASE',"postgres")
 
 def connect():
-    return psycopg2.connect(user=user,
+    if url=="localhost":
+        return psycopg2.connect(user=user,
                             password=password,
                             host=url,
                             port=port,
                             database=db)
-
+    else:
+        return psycopg2.connect(url, sslmode='require')
 
 def nuke():
     runcmd("delete from links *")

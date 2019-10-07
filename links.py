@@ -7,13 +7,6 @@ import db
 Links = {}
 
 def load_links_db():
-    if not os.path.isfile(settings.links_file):
-        log("%s does not exist. No links loaded" % settings.links_file)
-        return  # file does not exist
-
-    with open(settings.links_file) as file:
-        file_content = file.read()
-
     global Links
     try:
         new_links = db.select("*")
