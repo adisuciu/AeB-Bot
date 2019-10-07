@@ -8,9 +8,10 @@ from base64 import b64encode
 import json
 import mimetypes
 import datetime
-from links import Links
-from links import find_links_contain
 import links
+from links import find_links_contain
+
+from bs4 import BeautifulSoup
 
 import PIL
 from PIL import ImageFont
@@ -227,12 +228,20 @@ def meme_gen(request):
         bottomtext = urllib.parse.quote_plus(request[3])
 
     request[1]=links.remove_braces_from_link(request[1])
+
+    # if "imgur.com" in request[1] and not "i.imgur.com" in request[1]:
+    #     with urllib.request.urlopen(request[1]) as f:
+    #         r = f.read()
+    #         soup = BeautifulSoup(r)
+    #         imageUrl = soup.select('.post-image a')[0]['href']
+    #         request[1]=imageUrl
+
     if request[1] not in Dict:
-        if (request[1]) not in Links:
+        if (request[1]) not in links.Links:
             pass
 
         else:  # request is in links dictionary
-            request[1] = Links[request[1]]  # change request to link
+            request[1] = links.Links[request[1]]  # change request to link
 
         url = request[1]
         parsed_url = urllib.parse.urlparse(url)
