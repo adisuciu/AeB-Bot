@@ -114,6 +114,8 @@ venv.bak/
 *.ttf
 bottoken
 font
+token
+skypetoken
 imgurtoken
 meme_history
 temp*.*
