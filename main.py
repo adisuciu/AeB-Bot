@@ -9,6 +9,7 @@ import links
 import commands
 import skypebottoken
 import os
+import redis
 
 import bleach
 from bs4 import BeautifulSoup
@@ -18,7 +19,8 @@ from flask import Flask, request
 app = Flask(__name__)
 last_sender = ""
 nsfw_tag = False
-bot_name=""
+bot_name = ""
+db = redis.from_url(os.environ['REDIS_URL'])
 
 bot = skype_chatbot.SkypeBot(skypebottoken.app_id, skypebottoken.app_secret)
 

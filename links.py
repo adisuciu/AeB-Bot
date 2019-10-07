@@ -10,18 +10,17 @@ def load_links_file():
         log("%s does not exist. No links loaded" % settings.links_file)
         return  # file does not exist
 
-    with open(settings.links_file) as file:
-        file_content = file.read()
+    all_links = db.get('all_links')
 
     global Links
-    Links = json.loads(file_content)
+    Links = json.loads(all_links)
     log("Links dictionary loaded from %s" % settings.links_file)
 
 
 def save_links_file():
     output = json.dumps(Links)
-    with open(settings.links_file, mode="w") as file:
-        file.write(output)
+    global db
+    db.set('all_links', json.dumps(Links))
 
 
 def find_links_contain(cont=""):
