@@ -3,6 +3,7 @@ import settings
 from common import send_http_query
 from common import log
 import urllib
+import urllib.request
 import io
 from base64 import b64encode
 import json
@@ -141,9 +142,9 @@ def DrawOutlinedText(image, coords, text, font, outline="black", fill="white"):
     image.text(coords, text, font=font, fill=fill)
 
 
-def build_meme_from_link(request):
-    toptext = request[2] if len(request) == 4 else ""
-    bottomtext = request[3] if len(request) == 4 else ""
+def build_meme_from_link(request, toptext_, bottomtext_):
+    toptext = urllib.parse.unquote_plus(toptext_)
+    bottomtext = urllib.parse.unquote_plus(bottomtext_)
 
     if not toptext and not bottomtext:
         return request[1]
@@ -217,10 +218,45 @@ def build_meme_from_link(request):
         return "Upload to imgur failed"
 
 
+# Returns the Image urls + the file name
+def processRedditAndImgurURL(url):
+    o = urllib.parse.urlparse(url)
+
+    # logger.debug(url)
+    # logger.debug(o)
+
+    # From Reddit
+    if 'i.reddit.com' == o.netloc:
+        # Direct Link
+        return url
+
+    # From Imgur
+    if 'i.imgur.com' == o.netloc:
+        # Direct Link
+        return url
+
+    if 'imgur.com' == o.netloc and ('/a/' in o.path or '/gallery/' in o.path):
+        # Album (Can't get images from here)
+        response=urllib.request.urlopen(url)
+        data = response.read()
+        content = data.decode("utf-8")
+        url = "https://i.imgur.com/" + content.split("https://i.imgur.com/",1)[1].split("\"")[0]
+        return url
+
+    if 'imgur.com' == o.netloc:
+        # Page link
+        img_id = url.split('/')[-1] + '.jpg'
+        return url + '.jpg'
+
+    return url
+
 def meme_gen(request):
     if len(request) == 2:
         toptext = ""
         bottomtext = ""
+    elif len(request) ==3:
+        toptext=""
+        bottomtext=urllib.parse.quote_plus(request[2])
     elif len(request) < 4:
         return "Wrong number of parameters. Usage /memegen <meme> '<text1>' '<text2>'"
     else:
@@ -229,13 +265,6 @@ def meme_gen(request):
 
     request[1]=links.remove_braces_from_link(request[1])
 
-    # if "imgur.com" in request[1] and not "i.imgur.com" in request[1]:
-    #     with urllib.request.urlopen(request[1]) as f:
-    #         r = f.read()
-    #         soup = BeautifulSoup(r)
-    #         imageUrl = soup.select('.post-image a')[0]['href']
-    #         request[1]=imageUrl
-
     if request[1] not in Dict:
         if (request[1]) not in links.Links:
             pass
@@ -243,8 +272,8 @@ def meme_gen(request):
         else:  # request is in links dictionary
             request[1] = links.Links[request[1]]  # change request to link
 
-        url = request[1]
-        parsed_url = urllib.parse.urlparse(url)
+        request[1] = processRedditAndImgurURL(request[1])
+        parsed_url = urllib.parse.urlparse(request[1])
         if not bool(parsed_url.scheme):
             return "Meme %s not found. Did you mean: %s" % (request[1], "'" +
                                                             "', '".join(find_memes_contain(request[1])) + "'" +
@@ -254,7 +283,7 @@ def meme_gen(request):
         if maintype not in ('image/png', 'image/jpeg'):
             return "URL is not a png or jpeg"
 
-        retval = build_meme_from_link(request)
+        retval = build_meme_from_link(request, toptext, bottomtext)
     else:  # request in meme dictionary
         retval = "http://apimeme.com/meme?meme=%s&top=%s&bottom=%s" % (Dict[request[1]], toptext, bottomtext)
 
