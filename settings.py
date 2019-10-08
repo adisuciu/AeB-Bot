@@ -10,5 +10,5 @@ image_temp_file = "temp.jpg"
 with open("font","r") as f:
     font_location = f.read()
 about_message = "Aici este BAIETII Official bot - v0.1\nSources available at: " \
-                "https://github.com/adisuciu/AeB-Telegram-Bot\n"
+                "https://github.com/adisuciu/AeB-Bot\n"
 
