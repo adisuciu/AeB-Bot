@@ -10,22 +10,24 @@ db = os.environ.get('DATABASE_DATABASE',"postgres")
 
 def connect():
     if url=="localhost":
-        return psycopg2.connect(user=user,
-                            password=password,
-                            host=url,
-                            port=port,
-                            database=db)
+        return psycopg2.connect(
+                    user=user,
+                    password=password,
+                    host=url,
+                    port=port,
+                    database=db
+               )
     else:
         return psycopg2.connect(url, sslmode='require')
 
 def nuke():
-    runcmd("delete from links *")
+    runcmd("DELETE FROM LINKS *")
     pass
 
 
 def create_if_doesnt_exist():
     connection = connect()
-    verify_table_query = """select * from pg_tables where tablename='links'"""
+    verify_table_query = """SELECT * FROM pg_tables WHERE tablename='links'"""
     cursor = connection.cursor()
     cursor.execute(verify_table_query)
     tables = cursor.fetchall()
@@ -33,9 +35,12 @@ def create_if_doesnt_exist():
         return
 
     log("TABLE DOESN'T EXIST .. CREATING")
-    create_table_query = '''CREATE TABLE LINKS
-             (id TEXT PRIMARY KEY     NOT NULL,
-             value           TEXT    NOT NULL); '''
+    create_table_query = '''
+            CREATE TABLE LINKS
+            (
+                id      TEXT PRIMARY KEY NOT NULL,
+                value   TEXT NOT NULL
+            ); '''
     runcmd(create_table_query)
 
 
@@ -64,13 +69,13 @@ def insert(id, value):
 
 
 def update(id, value):
-    sql_update_query = """Update LINKS set VALUE = %s where id = %s"""
+    sql_update_query = """UPDATE LINKS set VALUE = %s where id = %s"""
     record_to_update = (value, id)
     runcmd(sql_update_query, record_to_update)
 
 
 def delete(id):
-    sql_delete_query = """Delete from LINKS where id = %s"""
+    sql_delete_query = """DELETE FROM LINKS WHERE id = %s"""
     record_to_delete = (id,)
     runcmd(sql_delete_query, record_to_delete)
 
@@ -81,9 +86,9 @@ def select(id):
         connection = connect()
         cursor = connection.cursor()
         if id=="*":
-            postgreSQL_select_Query = "select * from LINKS"
+            postgreSQL_select_Query = "SELECT * FROM LINKS"
         else:
-            postgreSQL_select_Query = "select * from LINKS where id = %s"
+            postgreSQL_select_Query = "SELECT * FROM LINKS where id = %s"
 
         cursor.execute(postgreSQL_select_Query, id)
         all_links = cursor.fetchall()
