@@ -12,8 +12,6 @@ import datetime
 import links
 from links import find_links_contain
 
-from bs4 import BeautifulSoup
-
 import PIL
 from PIL import ImageFont
 from PIL import Image
@@ -172,30 +170,35 @@ def build_meme_from_link(request, toptext_, bottomtext_):
     fillcolor = "white"
     width = img.size[0]
     height = img.size[1]
-    textwidth = width - 100
+    textwidth = (width * 80)/100
+    textheight = (height * 18)/100
     maxFontSize = 300
     # search appropriate font size
     for i in range(maxFontSize):
         font = ImageFont.truetype(settings.font_location, i)
-        toptextsize = font.getsize(toptext)[0]
-        if textwidth < toptextsize:
+        toptextsize = font.getsize(toptext)
+        if textwidth < toptextsize[0]:
             break
+        if textheight < toptextsize[1]:
+            break;
 
     # draw top text
-    DrawOutlinedText(draw, ((width - toptextsize) / 2, 5), toptext, font=font, outline=shadowcolor, fill=fillcolor)
+    DrawOutlinedText(draw, ((width - toptextsize[0]) / 2, 5), toptext, font=font, outline=shadowcolor, fill=fillcolor)
 
     # search appropriate font size
-    bottextsize = 0
+    bottextsize = (0,0)
     for i in range(maxFontSize):
         font = ImageFont.truetype(settings.font_location, i)
-        bottextsize = font.getsize(bottomtext)[0]
+        bottextsize = font.getsize(bottomtext)
         # workaround for older PIL version that is used by pythonanywhere
-        bottextheight = i  # font.getsize(bottomtext)[1]
-        if textwidth < bottextsize:
+        bottextheight=i
+        if textwidth < bottextsize[0]:
+            break
+        if textheight < bottextsize[1]:
             break
 
     # draw bottom text
-    DrawOutlinedText(draw, ((width - bottextsize) / 2, height - bottextheight - 10), bottomtext,
+    DrawOutlinedText(draw, ((width - bottextsize[0]) / 2, height - bottextheight - 10), bottomtext,
                      font=font, outline=shadowcolor, fill=fillcolor)
 
     img=img.convert("RGB")
