@@ -114,7 +114,8 @@ def logged_in():
 
 def logout():
     try:
-        os.remove('token')
+        #os.remove('token')
+        db.update(settings.imgurtoken_db,"token","{}")
         global current_token
         current_token = {}
     except OSError:
