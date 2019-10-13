@@ -4,6 +4,8 @@ bot_prefix=''
 dt = datetime.datetime.now()
 
 links_file = "links.txt"
+links_db = "links"
+imgurtoken_db = "imgurtoken"
 log_file = "logs/log-%d%02d%02d-%02d%02d%02d.txt" % (dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
 image_temp_file = "temp.jpg"
 

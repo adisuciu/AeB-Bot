@@ -9,11 +9,13 @@ import time
 import urllib.parse as urlparse
 from common import log
 import common
+import db
+import settings
+
 
 client_id = 0
 client_secret = 0
 current_token = {}
-
 
 def get_token_from_imgur(param):
     json_data = json.dumps(param).encode('utf8')
@@ -67,15 +69,17 @@ def refresh_token():
 
 
 def write_token_to_file():
-    with open("token", "w") as f:
-        output = json.dumps(current_token)
-        f.write(output)
+    output = json.dumps(current_token)
+    # with open("token", "w") as f:
+    #     f.write(output)
+    db.update(settings.imgurtoken_db,"token",output)
 
 
 def read_token_from_file(filename):
-    with open(filename) as file:
-        global current_token
-        current_token = json.loads(file.read())
+    global current_token
+    # with open(filename) as file:
+    #     current_token = json.loads(file.read())
+    current_token=json.loads(db.select(settings.imgurtoken_db,"token")["token"])
 
 
 def get_token():

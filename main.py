@@ -121,7 +121,10 @@ def webhook_default():
 
 
 if __name__ == '__main__':
-    db.create_if_doesnt_exist()
+    db.create_if_doesnt_exist(settings.links_db)
+    exists = db.create_if_doesnt_exist(settings.imgurtoken_db)
+    if not exists:
+        db.insert(settings.imgurtoken_db,"token","{}")
     links.load_links_db()
     imgur_api.init()
     random.seed()  # init random number generator

@@ -1,6 +1,6 @@
 import os
 import json
-import settings
+from settings import links_db
 from common import log
 import db
 
@@ -9,7 +9,7 @@ Links = {}
 def load_links_db():
     global Links
     try:
-        new_links = db.select("*")
+        new_links = db.select(links_db,"*")
         Links = new_links
         log("Links dictionary loaded from db")
     except:
@@ -47,10 +47,10 @@ def remember_link(request):
         request[2] = remove_braces_from_link(request[2])
         Links[request[1]] = request[2]  # + ("v" if str(request[2].endswith(".gif")) else "") # can be activated
         if overwrite:
-            db.update(request[1],request[2])
+            db.update(links_db, request[1],request[2])
             return "'%s' overwritten, previous value: '%s'" % (request[1], prevVal)
         else:
-            db.insert(request[1],request[2])
+            db.insert(links_db, request[1],request[2])
             return "'%s' remembered" % request[1]
     else:
         return "Wrong number of parameters. Usage: /remember <name> <link>"
@@ -59,7 +59,7 @@ def remember_link(request):
 def forget_link(request):
     if type(request) == list and len(request) == 2:
         if request[1] in Links:
-            db.delete(request[1])
+            db.delete(links_db, request[1])
             del Links[request[1]]
 
             return "'%s' forgotten" % request[1]
