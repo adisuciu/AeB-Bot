@@ -5,6 +5,7 @@ import links
 import imgur_api
 import meme
 import db
+import os
 
 def about(request=0):
     return settings.about_message
@@ -38,9 +39,14 @@ def help(request=0):
 
 def quote(request):
     if len(request) == 2:
-        switcher = {"bug": "bug_mafia.txt",
-                    "ciuraru": "ciuraru.txt"}
-        return build_quote_file(request, switcher[request[1]]) if request[1] in switcher else False
+        switcher={}
+        for file in os.listdir("./quote"):
+            if file.endswith(".txt"):
+                switcher[file.split(".txt")[0]]=os.path.join("./quote", file)
+        if request[1] in switcher:
+            return build_quote_file(request, switcher[request[1]])
+        else:
+            return "No quotes found. Usage quote %s " % list(switcher.keys())
 
 
 # noinspection PyUnusedLocal
@@ -49,6 +55,7 @@ def build_quote_file(request=0, quote_file="bug_mafia.txt"):
         return "No quotes found. Usage quote <bug/ciuraru>"
     with open(quote_file) as file:
         content = file.readlines()
+    content = [i.strip() for i in content if i.strip()]
     string = content[random.randint(0, len(content) - 1)]  # return random string from file
     decoded_string = bytes(string, "utf-8").decode("unicode_escape")  # parse escape sequences such as \n
     return decoded_string
