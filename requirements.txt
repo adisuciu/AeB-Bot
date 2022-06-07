@@ -4,7 +4,7 @@ idna==2.8
 requests==2.22.0
 skype-chatbot==1.0.4
 urllib3==1.26.5
-Pillow==6.2.0
+Pillow==9.0.1
 bleach==3.3.0
 beautifulsoup4==4.8.0
 flask==1.1.1
